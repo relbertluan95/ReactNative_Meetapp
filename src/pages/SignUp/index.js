@@ -73,7 +73,7 @@ export default function SignUp({ navigation }) {
             onChangeText={setPassword}
           />
 
-          <SubmitButton loading={loading} onPress={() => {}}>
+          <SubmitButton loading={loading} onPress={handleSubmit}>
             Criar conta
           </SubmitButton>
         </Form>
