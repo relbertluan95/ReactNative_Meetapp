@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { RefreshControl } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -11,21 +12,32 @@ import { Container, Title, List } from './styles';
 
 export default function Subscription() {
   const [meetapp, setMeetapp] = useState();
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    async function loadMeetapp() {
-      try {
-        const response = await api.get('subscriptions');
+    loadMeetapp();
+  }, []);
 
-        setMeetapp(response.data);
-        console.tron.log(response.data);
-      } catch (err) {
-        console.tron.error(err.response.data);
-      }
+  async function loadMeetapp() {
+    try {
+      const response = await api.get('subscriptions');
+
+      setMeetapp(response.data);
+      console.tron.log(response.data);
+    } catch (err) {
+      console.tron.error(err.response.data);
     }
+  }
+
+  function onRefresh() {
+    setRefreshing(true);
+
+    setMeetapp([]);
 
     loadMeetapp();
-  }, [meetapp]);
+
+    setRefreshing(false);
+  }
 
   return (
     <Background>
@@ -36,6 +48,9 @@ export default function Subscription() {
           data={meetapp}
           keyExtractor={item => String(item.id)}
           renderItem={({ item }) => <ListSubscriptions data={item} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       </Container>
     </Background>
